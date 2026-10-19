@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pramuka Interactive Zone & 25 Game Studio - Created by Aliefah Syifa</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pramuka: {
+                            dark: '#3E2723',     /* Cokelat Tua Penegak */
+                            medium: '#5D4037',   /* Cokelat Sedang */
+                            light: '#8D6E63',    /* Cokelat Muda */
+                            soft: '#D7CCC8',     /* Cokelat Krem Soft */
+                            khaki: '#E6C280',    /* Seragam Pramuka Khaki */
+                            red: '#D32F2F',      /* Merah Kacu */
+                            green: '#2E7D32',    /* Hijau Tunas Kelapa */
+                            gold: '#FFB300'      /* Kuning Bintang */
+                        }
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F4EBE1;
+            color: #3E2723;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-fun {
+            font-family: 'Fredoka', cursive;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #D7CCC8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #5D4037;
+            border-radius: 5px;
+        }
+
+        /* Animations */
+        .scout-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scout-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 14px 28px -6px rgba(62, 39, 35, 0.25);
+        }
+
+        /* Floating Animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1.5deg); }
+        }
+        .animate-float {
+            animation: floatSlow 3.5s infinite ease-in-out;
+        }
+
+        /* Arm Waving Animation */
+        @keyframes waveArm {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-22deg); }
+        }
+        .animate-wave {
+            transform-origin: 85% 65%;
+            animation: waveArm 1.8s infinite ease-in-out;
+        }
+
+        /* Tunas Kelapa Dance */
+        @keyframes tunasDance {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-8deg) scale(1.08); }
+            75% { transform: rotate(8deg) scale(1.08); }
+        }
+        .tunas-hover:hover {
+            animation: tunasDance 0.8s ease-in-out;
+        }
+
+        /* Cartoon Campfire Flames */
+        @keyframes flickerFlame {
+            0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
+            33% { transform: scale(1.08, 0.95) rotate(2deg); opacity: 1; }
+            66% { transform: scale(0.95, 1.05) rotate(-2deg); opacity: 0.9; }
+        }
+        .flame-main { animation: flickerFlame 0.8s infinite ease-in-out; transform-origin: bottom center; }
+        .flame-inner { animation: flickerFlame 0.5s infinite ease-in-out reverse; transform-origin: bottom center; }
+
+        @keyframes sparkFly {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-40px) translateX(12px) scale(0); opacity: 0; }
+        }
+        .spark-1 { animation: sparkFly 1.2s infinite ease-out; }
+        .spark-2 { animation: sparkFly 1.6s infinite ease-out 0.4s; }
+
+        /* Speech Bubble Tail */
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 35px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #ffffff transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Print CSS for Certificate & Export Document */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-pramuka-khaki selection:text-pramuka-dark">
+
+    <!-- TOP NAVBAR -->
+    <header class="sticky top-0 z-50 bg-pramuka-dark text-white shadow-lg border-b-4 border-pramuka-red no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                <!-- SVG Logo Tunas Kelapa Animated -->
+                <div class="bg-pramuka-khaki p-2 rounded-2xl shadow-inner tunas-hover transition transform">
+                    <svg class="w-8 h-8 text-pramuka-dark" viewBox="0 0 100 100" fill="currentColor">
+                        <path d="M50 10 C50 10 30 35 30 60 C30 75 40 85 50 85 C60 85 70 75 70 60 C70 35 50 10 50 10 Z" fill="#2E7D32"/>
+                        <path d="M50 10 C50 10 65 30 80 35 C70 50 60 60 50 60 Z" fill="#4CAF50"/>
+                        <path d="M50 10 C50 10 35 30 20 35 C30 50 40 60 50 60 Z" fill="#1B5E20"/>
+                        <circle cx="50" cy="70" r="14" fill="#5D4037"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-pramuka-khaki">PRAMUKA ZONE</h1>
+                    <p class="text-xs text-amber-200">25 Game Studio & Animated Mascot</p>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <nav class="hidden md:flex items-center space-x-2 text-sm font-semibold">
+                <button onclick="switchTab('dashboard')" class="nav-btn px-4 py-2 rounded-xl hover:bg-pramuka-medium transition active-tab" id="btn-dashboard">
+                    <i class="fa-solid fa-gamepad mr-1 text-pramuka-khaki"></i> 25 Ide Game
+                </button>
+                <button onclick="switchTab('minigames')" class="nav-btn px-4 py-2 rounded-xl hover:bg-pramuka-medium transition" id="btn-minigames">
+                    <i class="fa-solid fa-trophy mr-1 text-pramuka-gold"></i> Arena Play
+                </button>
+                <button onclick="switchTab('converter')" class="nav-btn px-4 py-2 rounded-xl hover:bg-pramuka-medium transition" id="btn-converter">
+                    <i class="fa-solid fa-code mr-1 text-teal-300"></i> Sandi Converter
+                </button>
+                <button onclick="switchTab('checklist')" class="nav-btn px-4 py-2 rounded-xl hover:bg-pramuka-medium transition" id="btn-checklist">
+                    <i class="fa-solid fa-campground mr-1 text-orange-300"></i> Camping Planner
+                </button>
+            </nav>
+
+            <button onclick="window.print()" class="bg-pramuka-red hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2 transform hover:scale-105">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="hidden sm:inline">Cetak / Export PDF</span>
+            </button>
+        </div>
+
+        <!-- Mobile Bottom Nav -->
+        <div class="md:hidden flex justify-around bg-pramuka-medium py-2 text-xs border-t border-pramuka-light">
+            <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-pramuka-khaki">
+                <i class="fa-solid fa-gamepad text-base"></i>
+                <span>25 Game</span>
+            </button>
+            <button onclick="switchTab('minigames')" class="flex flex-col items-center text-white">
+                <i class="fa-solid fa-trophy text-base"></i>
+                <span>Arena Play</span>
+            </button>
+            <button onclick="switchTab('converter')" class="flex flex-col items-center text-white">
+                <i class="fa-solid fa-code text-base"></i>
+                <span>Sandi</span>
+            </button>
+            <button onclick="switchTab('checklist')" class="flex flex-col items-center text-white">
+                <i class="fa-solid fa-campground text-base"></i>
+                <span>Camping</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN HERO BANNER WITH CARTOON CHARACTERS (NO PRINT) -->
+    <section class="no-print bg-gradient-to-r from-pramuka-dark via-pramuka-medium to-pramuka-dark text-white py-8 px-4 relative overflow-hidden shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+            
+            <!-- Left Mascot: Ani (Pramuka SMA Perempuan) -->
+            <div class="hidden lg:flex flex-col items-center w-48 animate-float">
+                <svg class="w-44 h-52 cursor-pointer transition transform hover:scale-110" viewBox="0 0 200 240" onclick="triggerMascotSpeak('Hai! Aku Ani, Penegak Pramuka SMA!')">
+                    <!-- Topi Pet Pramuka -->
+                    <path d="M50 75 C50 35 150 35 150 75 Z" fill="#5D4037"/>
+                    <path d="M40 75 Q100 60 160 75 L150 82 Q100 70 50 82 Z" fill="#3E2723"/>
+                    <circle cx="100" cy="52" r="8" fill="#FFB300"/> <!-- Tunas Badge -->
+                    <!-- Hair -->
+                    <path d="M55 75 Q40 110 50 135 M145 75 Q160 110 150 135" stroke="#212121" stroke-width="12" stroke-linecap="round"/>
+                    <!-- Face -->
+                    <circle cx="100" cy="98" r="38" fill="#FFD180"/>
+                    <!-- Eyes & Smile -->
+                    <circle cx="86" cy="94" r="5" fill="#212121"/>
+                    <circle cx="114" cy="94" r="5" fill="#212121"/>
+                    <circle cx="88" cy="92" r="1.5" fill="#FFF"/>
+                    <circle cx="116" cy="92" r="1.5" fill="#FFF"/>
+                    <!-- Cheeks -->
+                    <circle cx="78" cy="104" r="6" fill="#FF8A80" opacity="0.6"/>
+                    <circle cx="122" cy="104" r="6" fill="#FF8A80" opacity="0.6"/>
+                    <path d="M90 110 Q100 122 110 110" fill="none" stroke="#D32F2F" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Body & Uniform -->
+                    <path d="M70 135 L130 135 L140 210 L60 210 Z" fill="#E6C280"/>
+                    <!-- Kacu Merah Putih -->
+                    <path d="M80 135 L100 175 L120 135 Z" fill="#FFFFFF"/>
+                    <path d="M85 135 L100 170 L115 135 Z" fill="#D32F2F"/>
+                    <circle cx="100" cy="155" r="5" fill="#5D4037"/> <!-- Ring Kacu -->
+                    <!-- Waving Arm -->
+                    <g class="animate-wave">
+                        <path d="M130 140 Q160 120 165 95" fill="none" stroke="#E6C280" stroke-width="14" stroke-linecap="round"/>
+                        <circle cx="165" cy="92" r="10" fill="#FFD180"/>
+                    </g>
+                </svg>
+                <span class="bg-pramuka-khaki text-pramuka-dark text-xs font-black px-3 py-1 rounded-full shadow mt-1">Ani (Penegak)</span>
+            </div>
+
+            <!-- Center Text & Animated Campfire -->
+            <div class="text-center max-w-2xl">
+                <!-- Cartoon Campfire SVG -->
+                <div class="flex justify-center mb-2">
+                    <svg class="w-16 h-16" viewBox="0 0 100 100">
+                        <!-- Logs -->
+                        <rect x="20" y="70" width="60" height="12" rx="4" fill="#5D4037" transform="rotate(-15 50 75)"/>
+                        <rect x="20" y="70" width="60" height="12" rx="4" fill="#3E2723" transform="rotate(15 50 75)"/>
+                        <!-- Outer Flame -->
+                        <path class="flame-main" d="M50 15 C65 35 75 50 75 70 C75 82 64 90 50 90 C36 90 25 82 25 70 C25 50 35 35 50 15 Z" fill="#FF3D00"/>
+                        <!-- Inner Flame -->
+                        <path class="flame-inner" d="M50 35 C60 50 65 60 65 72 C65 80 58 85 50 85 C42 85 35 80 35 72 C35 60 40 50 50 35 Z" fill="#FFEA00"/>
+                        <!-- Sparks -->
+                        <circle class="spark-1" cx="42" cy="30" r="3" fill="#FFEA00"/>
+                        <circle class="spark-2" cx="58" cy="25" r="2.5" fill="#FF9100"/>
+                    </svg>
+                </div>
+
+                <div class="inline-block bg-pramuka-red text-white text-xs px-4 py-1.5 rounded-full font-bold uppercase tracking-widest mb-2 shadow-lg">
+                    <i class="fa-solid fa-star mr-1"></i> Interactive Scout Adventure
+                </div>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-pramuka-khaki mb-2 drop-shadow-md">
+                    Pramuka Interactive Zone
+                </h2>
+                <p class="text-stone-200 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+                    Media Pembelajaran Kepramukaan SMA/Penegak Interaktif karya <strong>Aliefah Syifa</strong>. Dilengkapi Bimo & Ani sebagai pandu animasi, 25 ide game, dan simulator sandi!
+                </p>
+
+                <div class="mt-5 flex flex-wrap justify-center gap-3">
+                    <button onclick="switchTab('minigames'); triggerMascotSpeak('Yuk uji ketangkasanmu di Arena Play!')" class="bg-pramuka-gold hover:bg-amber-500 text-pramuka-dark font-black px-6 py-2.5 rounded-2xl shadow-lg transition transform hover:-translate-y-1 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-play"></i> Mainkan Game
+                    </button>
+                    <button onclick="switchTab('dashboard'); triggerMascotSpeak('Temukan 25 ide aplikasi Pramuka seru!')" class="bg-pramuka-khaki/20 hover:bg-pramuka-khaki/30 text-pramuka-khaki font-bold border border-pramuka-khaki px-5 py-2.5 rounded-2xl transition text-sm">
+                        <i class="fa-solid fa-lightbulb"></i> 25 Ide Game
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Mascot: Bimo (Pramuka SMA Laki-laki) -->
+            <div class="hidden lg:flex flex-col items-center w-48 animate-float" style="animation-delay: 1s;">
+                <svg class="w-44 h-52 cursor-pointer transition transform hover:scale-110" viewBox="0 0 200 240" onclick="triggerMascotSpeak('Salam Pramuka! Aku Bimo, Siap memandu kamu!')">
+                    <!-- Baret Pramuka Penegak -->
+                    <path d="M45 65 C45 30 155 30 155 65 Z" fill="#5D4037"/>
+                    <path d="M40 65 Q100 50 160 65 C165 72 150 80 140 80 Q100 68 45 75 Z" fill="#3E2723"/>
+                    <circle cx="75" cy="50" r="7" fill="#FFB300"/> <!-- Badge Baret -->
+                    <!-- Face -->
+                    <circle cx="100" cy="98" r="38" fill="#FFD180"/>
+                    <!-- Hair -->
+                    <path d="M68 75 Q100 68 132 75" fill="none" stroke="#212121" stroke-width="8" stroke-linecap="round"/>
+                    <!-- Eyes & Smile -->
+                    <circle cx="86" cy="94" r="5" fill="#212121"/>
+                    <circle cx="114" cy="94" r="5" fill="#212121"/>
+                    <circle cx="88" cy="92" r="1.5" fill="#FFF"/>
+                    <circle cx="116" cy="92" r="1.5" fill="#FFF"/>
+                    <!-- Cheeks -->
+                    <circle cx="78" cy="104" r="5" fill="#FF8A80" opacity="0.5"/>
+                    <circle cx="122" cy="104" r="5" fill="#FF8A80" opacity="0.5"/>
+                    <path d="M88 108 Q100 120 112 108" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Body & Uniform -->
+                    <path d="M70 135 L130 135 L140 210 L60 210 Z" fill="#E6C280"/>
+                    <!-- Kacu Merah Putih -->
+                    <path d="M80 135 L100 175 L120 135 Z" fill="#FFFFFF"/>
+                    <path d="M85 135 L100 170 L115 135 Z" fill="#D32F2F"/>
+                    <circle cx="100" cy="155" r="5" fill="#5D4037"/>
+                    <!-- Left Arm Waving -->
+                    <g class="animate-wave">
+                        <path d="M70 140 Q40 120 35 95" fill="none" stroke="#E6C280" stroke-width="14" stroke-linecap="round"/>
+                        <circle cx="35" cy="92" r="10" fill="#FFD180"/>
+                    </g>
+                </svg>
+                <span class="bg-pramuka-khaki text-pramuka-dark text-xs font-black px-3 py-1 rounded-full shadow mt-1">Bimo (Penegak)</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FLOATING INTERACTIVE MASCOT GUIDE (BOTTOM RIGHT) -->
+    <div id="mascotGuide" class="fixed bottom-4 right-4 z-50 flex items-end no-print pointer-events-none">
+        <!-- Speech Bubble -->
+        <div id="speechBubble" class="speech-bubble relative bg-white text-pramuka-dark p-4 rounded-2xl shadow-2xl border-2 border-pramuka-khaki max-w-xs mb-12 mr-[-20px] pointer-events-auto transition-all duration-300 transform scale-100">
+            <button onclick="closeSpeechBubble()" class="absolute -top-2 -left-2 bg-pramuka-red text-white w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center shadow">×</button>
+            <p id="mascotText" class="text-xs font-bold leading-relaxed">
+                Salam Pramuka! Aku Bimo. Klik aku jika butuh bantuan atau fakta menarik ya!
+            </p>
+        </div>
+
+        <!-- Clickable Mascot Avatar -->
+        <div onclick="triggerMascotRandomFact()" class="pointer-events-auto cursor-pointer group relative">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-pramuka-khaki border-4 border-pramuka-dark rounded-full shadow-2xl overflow-hidden flex items-center justify-center transform group-hover:scale-110 transition">
+                <svg class="w-16 h-16 pt-2" viewBox="0 0 200 200">
+                    <path d="M45 65 C45 30 155 30 155 65 Z" fill="#5D4037"/>
+                    <circle cx="100" cy="98" r="38" fill="#FFD180"/>
+                    <circle cx="86" cy="94" r="5" fill="#212121"/>
+                    <circle cx="114" cy="94" r="5" fill="#212121"/>
+                    <path d="M88 108 Q100 120 112 108" fill="none" stroke="#212121" stroke-width="3"/>
+                    <path d="M80 135 L100 175 L120 135 Z" fill="#D32F2F"/>
+                </svg>
+            </div>
+            <span class="absolute -top-1 -right-1 bg-pramuka-red text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow animate-bounce">Tanya!</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- TAB 1: 25 IDE GAME PRAMUKA (DASHBOARD) -->
+        <section id="tab-dashboard" class="tab-content">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white p-6 rounded-3xl shadow-md border-2 border-pramuka-soft">
+                <div>
+                    <h3 class="text-2xl font-bold text-pramuka-dark flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-pramuka-red"></i> Katalog 25 Ide Game Kepramukaan
+                    </h3>
+                    <p class="text-gray-600 text-sm">Rancangan aplikasi interaktif lengkap dengan panduan & tujuan edukasinya.</p>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="filterCategory" onchange="renderCards()" class="bg-pramuka-soft text-pramuka-dark text-sm rounded-xl px-4 py-2 font-bold focus:ring-2 focus:ring-pramuka-dark outline-none cursor-pointer">
+                        <option value="ALL">Semua Kategori (25)</option>
+                        <option value="Sandi & Kode">Sandi & Kode</option>
+                        <option value="Tali Temali">Tali Temali</option>
+                        <option value="Navigasi">Navigasi & Kompas</option>
+                        <option value="Survival & P3K">Survival & P3K</option>
+                        <option value="Pengetahuan Umum">Pengetahuan Umum</option>
+                    </select>
+
+                    <div class="relative flex-1 sm:w-64">
+                        <input type="text" id="searchInput" onkeyup="renderCards()" placeholder="Cari ide game..." class="w-full bg-pramuka-soft text-pramuka-dark text-sm rounded-xl pl-9 pr-4 py-2 font-bold focus:ring-2 focus:ring-pramuka-dark outline-none">
+                        <i class="fa-solid fa-search absolute left-3 top-3 text-gray-500 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRID CONTAINER 25 IDE -->
+            <div id="ideasGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated by JS -->
+            </div>
+        </section>
+
+        <!-- TAB 2: MINI GAME ARENA INTERAKTIF -->
+        <section id="tab-minigames" class="tab-content hidden">
+            <div class="text-center mb-6">
+                <span class="bg-pramuka-red text-white text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider">Interactive Playground</span>
+                <h3 class="text-3xl font-extrabold text-pramuka-dark mt-2">Arena Game Pramuka Studio</h3>
+                <p class="text-gray-600 text-sm max-w-xl mx-auto">Uji ketangkasan dan pengetahuan kepramukaanmu secara interaktif!</p>
+            </div>
+
+            <!-- Mini Game Selection Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <button onclick="openMiniGame('morse')" id="mbtn-morse" class="minigame-tab-btn bg-pramuka-dark text-pramuka-khaki font-bold px-5 py-2.5 rounded-2xl shadow transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-signal"></i> 1. Kuis Sandi Morse
+                </button>
+                <button onclick="openMiniGame('kompas')" id="mbtn-kompas" class="minigame-tab-btn bg-white text-pramuka-dark hover:bg-pramuka-soft font-bold px-5 py-2.5 rounded-2xl shadow transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-compass"></i> 2. Tebak Azimut Kompas
+                </button>
+                <button onclick="openMiniGame('simpul')" id="mbtn-simpul" class="minigame-tab-btn bg-white text-pramuka-dark hover:bg-pramuka-soft font-bold px-5 py-2.5 rounded-2xl shadow transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-ring"></i> 3. Match Simpul Tali
+                </button>
+                <button onclick="openMiniGame('p3k')" id="mbtn-p3k" class="minigame-tab-btn bg-white text-pramuka-dark hover:bg-pramuka-soft font-bold px-5 py-2.5 rounded-2xl shadow transition flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-kit-medical"></i> 4. Survival & P3K
+                </button>
+            </div>
+
+            <!-- GAME 1: MORSE -->
+            <div id="game-morse" class="game-box bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pramuka-khaki max-w-2xl mx-auto relative overflow-hidden">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                    <div>
+                        <h4 class="text-xl font-bold text-pramuka-dark">Kuis Morse Sound & Visual</h4>
+                        <p class="text-xs text-gray-500">Dengarkan audio morse atau lihat kodenya, lalu tebak kata yang tepat!</p>
+                    </div>
+                    <div class="bg-pramuka-khaki px-4 py-1.5 rounded-xl font-black text-pramuka-dark text-sm shadow">
+                        Skor: <span id="morseScore">0</span>
+                    </div>
+                </div>
+
+                <div class="text-center py-6 bg-pramuka-soft/40 rounded-2xl mb-6 relative">
+                    <span id="morseCategoryBadge" class="text-xs bg-pramuka-medium text-white px-3 py-1 rounded-full font-semibold">Morse Challenge</span>
+                    
+                    <div id="morseVisualDisplay" class="text-4xl sm:text-5xl font-mono font-black text-pramuka-dark tracking-widest my-4">
+                        .- -... -.-.
+                    </div>
+
+                    <button onclick="playMorseAudio()" class="bg-pramuka-green hover:bg-green-800 text-white font-bold px-5 py-2.5 rounded-xl shadow transition inline-flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-volume-high text-base"></i> Putar Suara Morse
+                    </button>
+                </div>
+
+                <div id="morseOptions" class="grid grid-cols-2 gap-4"></div>
+                <div id="morseFeedback" class="mt-4 text-center font-bold text-sm h-6"></div>
+            </div>
+
+            <!-- GAME 2: KOMPAS NAVIGASI -->
+            <div id="game-kompas" class="game-box bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pramuka-khaki max-w-2xl mx-auto hidden">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                    <div>
+                        <h4 class="text-xl font-bold text-pramuka-dark">Simulasi Mata Angin & Azimut</h4>
+                        <p class="text-xs text-gray-500">Tentukan arah kompas / sudut azimut yang diminta!</p>
+                    </div>
+                    <div class="bg-pramuka-khaki px-4 py-1.5 rounded-xl font-black text-pramuka-dark text-sm shadow">
+                        Skor: <span id="kompasScore">0</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center py-6 bg-amber-50 rounded-2xl mb-6">
+                    <p class="text-sm font-bold text-pramuka-dark mb-2">Target Arah: <span id="kompasTargetText" class="text-pramuka-red text-lg font-black">Utara (0°)</span></p>
+
+                    <!-- Interactive Compass SVG -->
+                    <div class="relative my-2">
+                        <svg id="compassSvg" class="w-48 h-48 transform transition-transform duration-500" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" fill="#3E2723" stroke="#E6C280" stroke-width="6"/>
+                            <circle cx="100" cy="100" r="80" fill="#FFF8E7"/>
+                            <text x="100" y="35" text-anchor="middle" font-weight="bold" fill="#D32F2F" font-size="16">U</text>
+                            <text x="170" y="105" text-anchor="middle" font-weight="bold" fill="#3E2723" font-size="16">T</text>
+                            <text x="100" y="175" text-anchor="middle" font-weight="bold" fill="#3E2723" font-size="16">S</text>
+                            <text x="30" y="105" text-anchor="middle" font-weight="bold" fill="#3E2723" font-size="16">B</text>
+
+                            <!-- Needle Pointer -->
+                            <g id="compassNeedle" class="origin-center transition-transform duration-700">
+                                <polygon points="100,30 90,100 110,100" fill="#D32F2F"/>
+                                <polygon points="100,170 90,100 110,100" fill="#5D4037"/>
+                                <circle cx="100" cy="100" r="8" fill="#FFB300"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <p class="text-xs text-gray-500">Pilih derajat azimut yang tepat di bawah ini:</p>
+                </div>
+
+                <div id="kompasOptions" class="grid grid-cols-2 gap-4"></div>
+                <div id="kompasFeedback" class="mt-4 text-center font-bold text-sm h-6"></div>
+            </div>
+
+            <!-- GAME 3: MATCH SIMPUL -->
+            <div id="game-simpul" class="game-box bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pramuka-khaki max-w-2xl mx-auto hidden">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                    <div>
+                        <h4 class="text-xl font-bold text-pramuka-dark">Match Simpul & Tali Temali</h4>
+                        <p class="text-xs text-gray-500">Pasangkan jenis simpul pramuka dengan kegunaan utamanya!</p>
+                    </div>
+                    <div class="bg-pramuka-khaki px-4 py-1.5 rounded-xl font-black text-pramuka-dark text-sm shadow">
+                        Skor: <span id="simpulScore">0</span>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 p-6 rounded-2xl mb-6 text-center">
+                    <div class="w-20 h-20 bg-pramuka-khaki/30 border-2 border-pramuka-medium rounded-2xl mx-auto flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-knot text-4xl text-pramuka-dark"></i>
+                    </div>
+                    <h5 id="simpulName" class="text-xl font-extrabold text-pramuka-dark">Simpul Mati</h5>
+                    <p class="text-xs text-gray-600 mt-1">Apa fungsi utama dari simpul ini?</p>
+                </div>
+
+                <div id="simpulOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                <div id="simpulFeedback" class="mt-4 text-center font-bold text-sm h-6"></div>
+            </div>
+
+            <!-- GAME 4: SURVIVAL & P3K -->
+            <div id="game-p3k" class="game-box bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-pramuka-khaki max-w-2xl mx-auto hidden">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                    <div>
+                        <h4 class="text-xl font-bold text-pramuka-dark">Kuis Fast-Response Survival & P3K</h4>
+                        <p class="text-xs text-gray-500">Ambil keputusan medis & pertolongan pertama secara tepat!</p>
+                    </div>
+                    <div class="bg-pramuka-khaki px-4 py-1.5 rounded-xl font-black text-pramuka-dark text-sm shadow">
+                        Skor: <span id="p3kScore">0</span>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-pramuka-red p-4 rounded-xl mb-6">
+                    <span class="text-xs font-bold text-pramuka-red uppercase tracking-wider">Skenario Darurat:</span>
+                    <p id="p3kQuestion" class="text-sm font-bold text-gray-800 mt-1">Seseorang tersengat lebah saat mendirikan tenda...</p>
+                </div>
+
+                <div id="p3kOptions" class="space-y-3"></div>
+                <div id="p3kFeedback" class="mt-4 text-center font-bold text-sm h-6"></div>
+            </div>
+        </section>
+
+        <!-- TAB 3: CONVERTER SANDI MORSE & SANDI KOTAK -->
+        <section id="tab-converter" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-2 border-pramuka-soft">
+                <div class="border-b pb-4 mb-6 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-pramuka-dark flex items-center gap-2">
+                            <i class="fa-solid fa-code text-teal-600"></i> Converter Sandi Morse & Sandi Kotak 1
+                        </h3>
+                        <p class="text-gray-600 text-sm">Ubah teks biasa menjadi kode sandi pramuka secara instant!</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-pramuka-dark mb-2">Masukkan Teks Tangan / Kata:</label>
+                        <textarea id="converterInput" onkeyup="convertSandi()" rows="5" class="w-full p-4 rounded-2xl bg-pramuka-soft/30 border-2 border-pramuka-light focus:border-pramuka-dark outline-none font-bold text-pramuka-dark" placeholder="Ketik kata pramuka di sini... (contoh: SALAM PRAMUKA)"></textarea>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-pramuka-dark text-white p-4 rounded-2xl">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-pramuka-khaki">HASIL SANDI MORSE</span>
+                                <button onclick="playConvertedMorse()" class="text-xs bg-pramuka-green hover:bg-green-700 text-white px-3 py-1 rounded-lg">
+                                    <i class="fa-solid fa-volume-high mr-1"></i> Bunyikan
+                                </button>
+                            </div>
+                            <div id="morseOutput" class="font-mono text-lg tracking-widest text-amber-200 min-h-[3rem] break-words">
+                                -... .-. .- ...- ---
+                            </div>
+                        </div>
+
+                        <div class="bg-stone-800 text-white p-4 rounded-2xl">
+                            <span class="text-xs font-bold text-amber-400 block mb-2">HASIL SANDI KOTAK 1 (VISUAL REPRESENTATION)</span>
+                            <div id="kotakOutput" class="font-mono text-sm text-stone-300 min-h-[3rem] break-words">
+                                [KOTAK-1]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: CHECKLIST CAMPING INTERAKTIF -->
+        <section id="tab-checklist" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-2 border-pramuka-soft">
+                <div class="border-b pb-4 mb-6 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-pramuka-dark flex items-center gap-2">
+                            <i class="fa-solid fa-campground text-orange-600"></i> Checklist Peralatan Camping & Persami
+                        </h3>
+                        <p class="text-gray-600 text-sm">Persiapkan perbekalan camping pramukamu agar tidak ada yang tertinggal!</p>
+                    </div>
+                    <span id="checklistProgress" class="bg-pramuka-green text-white text-xs px-3 py-1.5 rounded-xl font-bold">0% Selesai</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="checklistItems"></div>
+            </div>
+        </section>
+
+        <!-- PRINT ONLY SECTION (PDF / PRINT OUTPUT) -->
+        <section class="print-only p-8 bg-white text-black font-sans">
+            <div class="border-8 border-double border-amber-900 p-8 rounded-3xl relative">
+                <div class="text-center border-b-4 border-black pb-4 mb-6">
+                    <h1 class="text-3xl font-black uppercase tracking-wider text-amber-950">GERAKAN PRAMUKA INDONESIA</h1>
+                    <h2 class="text-xl font-bold text-gray-800">Laporan & Rangkuman Studio Game Kepramukaan</h2>
+                    <p class="text-xs italic text-gray-600 mt-1">Dokumen Resmi Edukasi Digital Kepramukaan Interaktif</p>
+                </div>
+
+                <div class="mb-6 space-y-2 text-sm">
+                    <p><strong>Judul Aplikasi:</strong> Pramuka Interactive Zone & 25 Game Studio</p>
+                    <p><strong>Tanggal Cetak:</strong> <span id="printDate"></span></p>
+                    <p><strong>Kreator & Pengembang:</strong> <span class="text-lg font-bold">Aliefah Syifa</span></p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold border-b-2 border-black mb-2">Daftar 25 Ide Game & Aplikasi Kepramukaan:</h3>
+                    <ol id="printIdeasList" class="list-decimal pl-5 text-sm space-y-1">
+                        <!-- Populated dynamically -->
+                    </ol>
+                </div>
+
+                <div class="mt-12 flex justify-between items-end pt-8 border-t">
+                    <div class="text-center">
+                        <p class="text-xs">Mengetahui,</p>
+                        <p class="font-bold mt-12">Pembina Pramuka</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs">Dibuat & Disusun Oleh,</p>
+                        <p class="font-bold mt-12 text-amber-900">Aliefah Syifa</p>
+                    </div>
+                </div>
+
+                <!-- Watermark -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+                    <span class="text-6xl font-black rotate-45 uppercase">Created by Aliefah Syifa</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER WITH WATERMARK -->
+    <footer class="bg-pramuka-dark text-white border-t-4 border-pramuka-khaki py-6 no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <div class="flex items-center justify-center space-x-2 text-pramuka-khaki font-bold text-lg">
+                <i class="fa-solid fa-campground"></i>
+                <span>Pramuka Interactive Zone</span>
+            </div>
+            <p class="text-xs text-stone-300">
+                Aplikasi Edukasi Kepramukaan Interaktif berbasis Single HTML.
+            </p>
+            <div class="pt-2 border-t border-pramuka-medium mt-3">
+                <p class="text-sm font-semibold tracking-wide text-pramuka-khaki">
+                    Created by <span class="text-white font-extrabold underline decoration-pramuka-red decoration-2">Aliefah Syifa</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* --------------------------------------------------
+           1. DATA 25 IDE GAME KEPRAMUKAAN
+        -------------------------------------------------- */
+        const gameIdeas = [
+            { id: 1, title: "Sandi Morse Beep Simulator", category: "Sandi & Kode", desc: "Game menebak sinyal audio morse dengan efek suara nyata.", play: "Dengarkan sinyal beep, pilih kata yang sesuai.", edu: "Melatih pendengaran dan ingatan kode morse." },
+            { id: 2, title: "Match Master Simpul Tali", category: "Tali Temali", desc: "Memasangkan nama simpul dengan gambar dan fungsinya.", play: "Drag/klik nama simpul ke kegunaannya.", edu: "Meningkatkan pemahaman teknik tali-temali (pioneering)." },
+            { id: 3, title: "Kompas & Azimut Challenge", category: "Navigasi", desc: "Simulasi mencari arah mata angin dan derajat azimuth.", play: "Putar jarum kompas menuju sudut azimuth target.", edu: "Memahami pemetaan dan navigasi darat." },
+            { id: 4, title: "P3K Survival Runner", category: "Survival & P3K", desc: "Kuis respon cepat penanganan luka saat kecelakaan di hutan.", play: "Pilih tindakan medis darurat dalam waktu 10 detik.", edu: "Pertolongan Pertama Pada Kecelakaan (P3K)." },
+            { id: 5, title: "Pionering Tower Builder", category: "Tali Temali", desc: "Game puzzle membangun menara pandang dari bambu.", play: "Susun ikatan silang & kaki tiga hingga kokoh.", edu: "Konstruksi bangunan darurat pramuka." },
+            { id: 6, title: "Sandi Kotak 1 & 2 Decoder", category: "Sandi & Kode", desc: "Game memecahkan pesan rahasia bertema sandi kotak.", play: "Terjemahkan simbol garis kotak menjadi huruf.", edu: "Logika pemecahan sandi." },
+            { id: 7, title: "Sandi Rumput & Ular Quest", category: "Sandi & Kode", desc: "Menebak rumput tinggi-rendah sebagai simbol morse.", play: "Konversi visual rumput jadi kata kunci.", edu: "Variasi kreatif sandi morse." },
+            { id: 8, title: "Sematok Semaphore Hero", category: "Sandi & Kode", desc: "Game mengikuti posisi bendera semaphore secara tepat.", play: "Pilih huruf berdasarkan posisi dua bendera.", edu: "Kecepatan dan ketepatan komunikasi bendera." },
+            { id: 9, title: "Peta Pita & Peta Lokasi", category: "Navigasi", desc: "Simulasi membuat laporan perjalanan peta pita.", play: "Catat jarak, sudut, dan tanda medan sepanjang jalan.", edu: "Pemetaan rute penjelajahan." },
+            { id: 10, title: "Dasa Darma Crossword", category: "Pengetahuan Umum", desc: "Teka-teki silang seputar 10 Dasa Darma & Tri Satya.", play: "Isi kata-kata Dasa Darma yang rumpang.", edu: "Penanaman karakter dan nilai pramuka." },
+            { id: 11, title: "Jejak Alam & Menjejak Tanda", category: "Navigasi", desc: "Menebak arti batu, ranting, dan rumput penanda jalan.", play: "Pilih arti dari tanda alam yang ditemukan di jalur.", edu: "Teknik survival & membaca tanda medan." },
+            { id: 12, title: "Dapur Lapangan Cooking Dash", category: "Survival & P3K", desc: "Simulasi memasak makanan bergizi dengan bahan darurat.", play: "Pilih bahan alami yang aman dikonsumsi di hutan.", edu: "Kemandirian memasak saat persami." },
+            { id: 13, title: "Lagu & Yel-Yel Rhythm Game", category: "Pengetahuan Umum", desc: "Game musik menepuk irama Pramuka & Lagu Wajib.", play: "Tekan tombol sesuai ritme tepuk pramuka.", edu: "Kreativitas seni dan kebersamaan." },
+            { id: 14, title: "Api Unggun Story Adventure", category: "Pengetahuan Umum", desc: "Game cerita interaktif pilihan ganda di malam persami.", play: "Ambil keputusan bijak saat aktivitas malam.", edu: "Kepemimpinan dan kepedulian lingkungan." },
+            { id: 15, title: "Peringkat Badge TKK Collector", category: "Pengetahuan Umum", desc: "Kuis mengumpulkan Tanda Kecakapan Khusus (TKK).", play: "Jawab pertanyaan TKK untuk meraih badge.", edu: "Ragam kecakapan khusus anggota pramuka." },
+            { id: 16, title: "Sandi Jam & Sandi Angka", category: "Sandi & Kode", desc: "Memecahkan kode jam dan konversi angka.", play: "Hitung perbedaan menit untuk menemukan huruf.", edu: "Matematika dan logika sandi." },
+            { id: 17, title: "Tenda Quick Setup Challenge", category: "Survival & P3K", desc: "Game kecepatan mendirikan tenda dome & prisma.", play: "Urutkan langkah pasang pasak, tiang, dan flysheet.", edu: "Keterampilan manajemen perkemahan." },
+            { id: 18, title: "P3K Balut Kasa & Bidai", category: "Survival & P3K", desc: "Visualisasi menangani patah tulang dan pendarahan.", play: "Pasang mitela pada area tubuh yang cedera.", edu: "Teknik balut-membalut medis." },
+            { id: 19, title: "Kompas Malam & Bintang Pari", category: "Navigasi", desc: "Menentukan arah utara-selatan menggunakan rasi bintang.", play: "Cari rasi bintang Pari / Crux di langit malam.", edu: "Astronomi dasar navigasi." },
+            { id: 20, title: "Sandi AND & Sandi AN", category: "Sandi & Kode", desc: "Tebak kata rahasia dengan menyisipkan atau mengganti huruf.", play: "Hapus kata AND untuk menemukan kata asli.", edu: "Latihan ketelitian bahasa." },
+            { id: 21, title: "Sejarah Pramuka World Quiz", category: "Pengetahuan Umum", desc: "Kuis sejarah Baden Powell & Sri Sultan HB IX.", play: "Jawab kuis fakta sejarah Pramuka.", edu: "Pengetahuan sejarah kepanduan." },
+            { id: 22, title: "Kim Penglihatan & Penciuman", category: "Pengetahuan Umum", desc: "Game menguji ingatan benda dan aroma alami.", play: "Ingat 10 benda pramuka yang diperlihatkan 5 detik.", edu: "Latihan daya ingat (KIM)." },
+            { id: 23, title: "Struktur Organisasi Gudep", category: "Pengetahuan Umum", desc: "Game menyusun bagan Siaga, Penggalang, Penegak.", play: "Tempatkan tingkatan pramuka di posisi yang benar.", edu: "Pemahaman tingkatan keanggotaan." },
+            { id: 24, title: "Survival Air Bersih Filter", category: "Survival & P3K", desc: "Simulasi membuat alat penyaring air keruh di alam.", play: "Susun kerikil, pasir, arang, dan sabut kelapa.", edu: "Teknik penjernihan air darurat." },
+            { id: 25, title: "Pramuka Eco Ranger Trash Sorter", category: "Survival & P3K", desc: "Game memilah sampah organik & anorganik di perkemahan.", play: "Masukkan sampah ke tong yang sesuai.", edu: "Kelestarian lingkungan hidup." }
+        ];
+
+        /* MASCOT RANDOM FACTS & SPEECH */
+        const scoutFacts = [
+            "Tahukah kamu? Lambang Tunas Kelapa diciptakan oleh Sunardjo Admodipurwo!",
+            "Sandi Morse diciptakan oleh Samuel Morse pada tahun 1837.",
+            "Pramuka SMA masuk dalam tingkatan Pramuka Penegak (usia 16-20 tahun).",
+            "Tepuk Pramuka memiliki ritme khas: 3x, 3x, 7x tepukan!",
+            "Baden Powell adalah Bapak Pandu Dunia yang mendirikan gerakan kepanduan.",
+            "Simpul Pangkal sangat berguna untuk mengawali ikatan pada bambu menara!"
+        ];
+
+        function triggerMascotSpeak(text) {
+            const bubble = document.getElementById('speechBubble');
+            const mascotText = document.getElementById('mascotText');
+            mascotText.innerText = text;
+            bubble.classList.remove('scale-0', 'opacity-0');
+            bubble.classList.add('scale-100', 'opacity-100');
+        }
+
+        function triggerMascotRandomFact() {
+            const randomFact = scoutFacts[Math.floor(Math.random() * scoutFacts.length)];
+            triggerMascotSpeak(randomFact);
+        }
+
+        function closeSpeechBubble() {
+            const bubble = document.getElementById('speechBubble');
+            bubble.classList.add('scale-0', 'opacity-0');
+        }
+
+        /* Trigger Confetti Effect */
+        function triggerScoutConfetti() {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#D32F2F', '#E6C280', '#ffffff', '#3E2723', '#2E7D32']
+            });
+        }
+
+        /* Render Cards for 25 Ideas */
+        function renderCards() {
+            const container = document.getElementById('ideasGrid');
+            const cat = document.getElementById('filterCategory').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            container.innerHTML = '';
+
+            const filtered = gameIdeas.filter(item => {
+                const matchCat = (cat === 'ALL' || item.category === cat);
+                const matchSearch = item.title.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search);
+                return matchCat && matchSearch;
+            });
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "scout-card bg-white rounded-3xl p-6 shadow-md border-2 border-pramuka-soft flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold bg-pramuka-soft text-pramuka-dark px-3 py-1 rounded-full">
+                                #${item.id} ${item.category}
+                            </span>
+                            <i class="fa-solid fa-gamepad text-pramuka-light text-lg"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-pramuka-dark mb-2">${item.title}</h4>
+                        <p class="text-gray-600 text-xs mb-3 leading-relaxed">${item.desc}</p>
+                    </div>
+                    <div class="pt-3 border-t border-gray-100 text-xs space-y-1">
+                        <p class="text-pramuka-medium"><strong>Cara Main:</strong> ${item.play}</p>
+                        <p class="text-pramuka-green"><strong>Tujuan:</strong> ${item.edu}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Update print list
+            const printList = document.getElementById('printIdeasList');
+            printList.innerHTML = '';
+            gameIdeas.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${item.title}</strong> (${item.category}) - <em>${item.desc}</em>`;
+                printList.appendChild(li);
+            });
+        }
+
+        /* --------------------------------------------------
+           2. NAVIGATION TAB SWITCHING
+        -------------------------------------------------- */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-pramuka-medium', 'text-pramuka-khaki');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) activeBtn.classList.add('bg-pramuka-medium', 'text-pramuka-khaki');
+        }
+
+        /* --------------------------------------------------
+           3. MINI GAMES LOGIC
+        -------------------------------------------------- */
+        let currentMiniGame = 'morse';
+
+        function openMiniGame(gameKey) {
+            currentMiniGame = gameKey;
+            document.querySelectorAll('.game-box').forEach(el => el.classList.add('hidden'));
+            document.getElementById('game-' + gameKey).classList.remove('hidden');
+
+            document.querySelectorAll('.minigame-tab-btn').forEach(btn => {
+                btn.className = "minigame-tab-btn bg-white text-pramuka-dark hover:bg-pramuka-soft font-bold px-5 py-2.5 rounded-2xl shadow transition flex items-center gap-2 text-sm";
+            });
+            
+            const activeBtn = document.getElementById('mbtn-' + gameKey);
+            activeBtn.className = "minigame-tab-btn bg-pramuka-dark text-pramuka-khaki font-bold px-5 py-2.5 rounded-2xl shadow transition flex items-center gap-2 text-sm";
+
+            if(gameKey === 'morse') initMorseGame();
+            if(gameKey === 'kompas') initKompasGame();
+            if(gameKey === 'simpul') initSimpulGame();
+            if(gameKey === 'p3k') initP3kGame();
+        }
+
+        /* GAME 1: MORSE GAME */
+        const morseDict = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+            'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+            'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+            'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+            'Y': '-.--', 'Z': '--..'
+        };
+
+        const morseWords = ["PRAMUKA", "SIAGA", "TUNAS", "TENDA", "KACU", "CAMPS"];
+        let morseScore = 0;
+        let currentMorseWord = "";
+
+        function initMorseGame() {
+            currentMorseWord = morseWords[Math.floor(Math.random() * morseWords.length)];
+            const morseCode = currentMorseWord.split('').map(c => morseDict[c] || '').join(' ');
+            
+            document.getElementById('morseVisualDisplay').innerText = morseCode;
+            document.getElementById('morseFeedback').innerText = '';
+
+            const options = [currentMorseWord];
+            while(options.length < 4) {
+                const randW = morseWords[Math.floor(Math.random() * morseWords.length)];
+                if(!options.includes(randW)) options.push(randW);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const optContainer = document.getElementById('morseOptions');
+            optContainer.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "bg-pramuka-soft hover:bg-pramuka-khaki text-pramuka-dark font-black py-3 rounded-xl transition shadow text-sm";
+                btn.innerText = opt;
+                btn.onclick = () => checkMorseAnswer(opt);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkMorseAnswer(selected) {
+            const feedback = document.getElementById('morseFeedback');
+            if(selected === currentMorseWord) {
+                morseScore += 10;
+                document.getElementById('morseScore').innerText = morseScore;
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-green-600";
+                feedback.innerText = "Benar sekali! Bimo bangga padamu! (+10 Poin)";
+                triggerScoutConfetti();
+                triggerMascotSpeak('Wah luar biasa! Poin Morse kamu bertambah!');
+                setTimeout(initMorseGame, 1300);
+            } else {
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-red-600";
+                feedback.innerText = "Coba lagi! Dengarkan kodenya dengan cermat.";
+            }
+        }
+
+        function playMorseAudio() {
+            const code = document.getElementById('morseVisualDisplay').innerText;
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            let time = ctx.currentTime;
+
+            code.split('').forEach(char => {
+                if(char === '.') {
+                    let osc = ctx.createOscillator();
+                    osc.connect(ctx.destination);
+                    osc.start(time);
+                    osc.stop(time + 0.1);
+                    time += 0.2;
+                } else if(char === '-') {
+                    let osc = ctx.createOscillator();
+                    osc.connect(ctx.destination);
+                    osc.start(time);
+                    osc.stop(time + 0.3);
+                    time += 0.4;
+                } else {
+                    time += 0.2;
+                }
+            });
+        }
+
+        /* GAME 2: KOMPAS GAME */
+        const compassData = [
+            { direction: "Utara", degree: 0 },
+            { direction: "Timur Laut", degree: 45 },
+            { direction: "Timur", degree: 90 },
+            { direction: "Tenggara", degree: 135 },
+            { direction: "Selatan", degree: 180 },
+            { direction: "Barat Daya", degree: 225 },
+            { direction: "Barat", degree: 270 },
+            { direction: "Barat Laut", degree: 315 }
+        ];
+        let kompasScore = 0;
+        let currentCompassTarget = null;
+
+        function initKompasGame() {
+            currentCompassTarget = compassData[Math.floor(Math.random() * compassData.length)];
+            document.getElementById('kompasTargetText').innerText = `${currentCompassTarget.direction}`;
+            document.getElementById('compassNeedle').style.transform = `rotate(${currentCompassTarget.degree}deg)`;
+            document.getElementById('kompasFeedback').innerText = '';
+
+            const options = compassData.map(d => d.degree);
+            options.sort(() => Math.random() - 0.5);
+
+            const optContainer = document.getElementById('kompasOptions');
+            optContainer.innerHTML = '';
+            
+            const finalOpts = Array.from(new Set([currentCompassTarget.degree, ...options])).slice(0, 4);
+            finalOpts.sort(() => Math.random() - 0.5);
+
+            finalOpts.forEach(deg => {
+                const btn = document.createElement('button');
+                btn.className = "bg-pramuka-soft hover:bg-pramuka-khaki text-pramuka-dark font-black py-3 rounded-xl transition shadow text-sm";
+                btn.innerText = `${deg}° Azimut`;
+                btn.onclick = () => checkKompasAnswer(deg);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkKompasAnswer(selectedDegree) {
+            const feedback = document.getElementById('kompasFeedback');
+            if(selectedDegree === currentCompassTarget.degree) {
+                kompasScore += 10;
+                document.getElementById('kompasScore').innerText = kompasScore;
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-green-600";
+                feedback.innerText = "Tepat! Arah Kompas Akurat!";
+                triggerScoutConfetti();
+                triggerMascotSpeak('Navigasimu mantap! Kamu cocok jadi Pemimpin Regu!');
+                setTimeout(initKompasGame, 1300);
+            } else {
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-red-600";
+                feedback.innerText = "Derajat belum pas, coba lagi!";
+            }
+        }
+
+        /* GAME 3: SIMPUL MATCH */
+        const simpulData = [
+            { name: "Simpul Mati", desc: "Menyambung 2 tali yang sama besar dan dalam keadaan kering." },
+            { name: "Simpul Jangkar", desc: "Membuat tambatan pada tiang atau membuat tandu darurat." },
+            { name: "Simpul Pangkal", desc: "Mengawali dan mengakhiri suatu ikatan pada tiang/bambu." },
+            { name: "Simpul Ujung Tali", desc: "Pencegah agar pintalan pada ujung tali tidak terurai." }
+        ];
+        let simpulScore = 0;
+        let currentSimpul = null;
+
+        function initSimpulGame() {
+            currentSimpul = simpulData[Math.floor(Math.random() * simpulData.length)];
+            document.getElementById('simpulName').innerText = currentSimpul.name;
+            document.getElementById('simpulFeedback').innerText = '';
+
+            const options = simpulData.map(s => s.desc);
+            options.sort(() => Math.random() - 0.5);
+
+            const optContainer = document.getElementById('simpulOptions');
+            optContainer.innerHTML = '';
+            options.forEach(desc => {
+                const btn = document.createElement('button');
+                btn.className = "bg-pramuka-soft hover:bg-pramuka-khaki text-pramuka-dark text-xs font-bold p-3 rounded-xl text-left transition shadow leading-relaxed";
+                btn.innerText = desc;
+                btn.onclick = () => checkSimpulAnswer(desc);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkSimpulAnswer(selectedDesc) {
+            const feedback = document.getElementById('simpulFeedback');
+            if(selectedDesc === currentSimpul.desc) {
+                simpulScore += 10;
+                document.getElementById('simpulScore').innerText = simpulScore;
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-green-600";
+                feedback.innerText = "Hebat! Simpul terpasang dengan kuat!";
+                triggerScoutConfetti();
+                triggerMascotSpeak('Pioneering kamu keren banget!');
+                setTimeout(initSimpulGame, 1300);
+            } else {
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-red-600";
+                feedback.innerText = "Fungsi simpul kurang tepat.";
+            }
+        }
+
+        /* GAME 4: SURVIVAL P3K */
+        const p3kData = [
+            {
+                q: "Anggota regu terkena luka bakar ringan karena terkena cipratan minyak panas saat memasak. Langkah awal:",
+                opts: ["Goreskan mentega / pasta gigi", "Bilas dengan air mengalir bersih 10-15 menit", "Ikat erat dengan mitela"],
+                ans: 1
+            },
+            {
+                q: "Terjadi terkilir/keseleo pada pergelangan kaki saat menjelajah. Tindakan utama:",
+                opts: ["Istirahatkan & kompres dingin", "Paksa berjalan perlahan", "Urut bagian cedera dengan kuat"],
+                ans: 0
+            }
+        ];
+        let p3kScore = 0;
+        let currentP3k = null;
+
+        function initP3kGame() {
+            currentP3k = p3kData[Math.floor(Math.random() * p3kData.length)];
+            document.getElementById('p3kQuestion').innerText = currentP3k.q;
+            document.getElementById('p3kFeedback').innerText = '';
+
+            const optContainer = document.getElementById('p3kOptions');
+            optContainer.innerHTML = '';
+            currentP3k.opts.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full bg-pramuka-soft hover:bg-pramuka-khaki text-pramuka-dark text-xs font-bold p-3 rounded-xl text-left transition shadow";
+                btn.innerText = `${idx + 1}. ${optText}`;
+                btn.onclick = () => checkP3kAnswer(idx);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkP3kAnswer(idx) {
+            const feedback = document.getElementById('p3kFeedback');
+            if(idx === currentP3k.ans) {
+                p3kScore += 10;
+                document.getElementById('p3kScore').innerText = p3kScore;
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-green-600";
+                feedback.innerText = "Pertolongan Pertama Sukses!";
+                triggerScoutConfetti();
+                triggerMascotSpeak('Kerja bagus! Korban berhasil ditangani dengan aman.');
+                setTimeout(initP3kGame, 1300);
+            } else {
+                feedback.className = "mt-4 text-center font-bold text-sm h-6 text-red-600";
+                feedback.innerText = "Penanganan berisiko, coba tindakan lain.";
+            }
+        }
+
+        /* --------------------------------------------------
+           4. CONVERTER SANDI
+        -------------------------------------------------- */
+        function convertSandi() {
+            const input = document.getElementById('converterInput').value.toUpperCase();
+            
+            const morseResult = input.split('').map(char => {
+                if(char === ' ') return '/';
+                return morseDict[char] || char;
+            }).join(' ');
+
+            document.getElementById('morseOutput').innerText = morseResult || '-';
+
+            const kotakResult = input.split('').map(char => {
+                if(char >= 'A' && char <= 'Z') {
+                    return `[${char}]`;
+                }
+                return char;
+            }).join(' ');
+
+            document.getElementById('kotakOutput').innerText = kotakResult || '-';
+        }
+
+        function playConvertedMorse() {
+            const code = document.getElementById('morseOutput').innerText;
+            if(!code || code === '-') return;
+
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            let time = ctx.currentTime;
+
+            code.split('').forEach(char => {
+                if(char === '.') {
+                    let osc = ctx.createOscillator();
+                    osc.connect(ctx.destination);
+                    osc.start(time);
+                    osc.stop(time + 0.1);
+                    time += 0.2;
+                } else if(char === '-') {
+                    let osc = ctx.createOscillator();
+                    osc.connect(ctx.destination);
+                    osc.start(time);
+                    osc.stop(time + 0.3);
+                    time += 0.4;
+                } else {
+                    time += 0.2;
+                }
+            });
+        }
+
+        /* --------------------------------------------------
+           5. CHECKLIST CAMPING INTERAKTIF
+        -------------------------------------------------- */
+        const checklistData = [
+            "Tenda Dome / Tenda Prisma Complete",
+            "Tongkat Pramuka & Tali Tamang",
+            "Kacu / Hasduk & Ring Pramuka",
+            "Senter & Baterai Cadangan",
+            "Kotak P3K Personal & Obat Khusus",
+            "Matras & Sleeping Bag",
+            "Minsting / Alat Makan & Botol Minum",
+            "Seragam Pramuka Lengkap & Baju Olahraga",
+            "Jas Hujan / Ponco",
+            "Peluit & Kompas Lapangan"
+        ];
+
+        function initChecklist() {
+            const container = document.getElementById('checklistItems');
+            container.innerHTML = '';
+
+            checklistData.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center space-x-3 p-3 bg-pramuka-soft/30 rounded-xl border border-pramuka-soft";
+                div.innerHTML = `
+                    <input type="checkbox" id="chk-${idx}" onchange="updateProgress()" class="w-5 h-5 text-pramuka-green rounded focus:ring-pramuka-green cursor-pointer">
+                    <label for="chk-${idx}" class="text-xs font-bold text-pramuka-dark cursor-pointer">${item}</label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateProgress() {
+            const total = checklistData.length;
+            let checked = 0;
+            checklistData.forEach((_, idx) => {
+                if(document.getElementById(`chk-${idx}`).checked) checked++;
+            });
+
+            const percent = Math.round((checked / total) * 100);
+            document.getElementById('checklistProgress').innerText = `${percent}% Selesai`;
+
+            if(percent === 100) {
+                triggerScoutConfetti();
+                triggerMascotSpeak('Perbekalan Persami lengkap! Siap berangkat camping!');
+            }
+        }
+
+        /* --------------------------------------------------
+           INITIALIZATION ON LOAD
+        -------------------------------------------------- */
+        window.onload = function() {
+            renderCards();
+            initMorseGame();
+            initChecklist();
+
+            const today = new Date().toLocaleDateString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            document.getElementById('printDate').innerText = today;
+
+            // Welcome message from Mascot
+            setTimeout(() => {
+                triggerMascotSpeak("Selamat datang di Pramuka Interactive Zone karya Aliefah Syifa! Mari belajar dan bermain!");
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
